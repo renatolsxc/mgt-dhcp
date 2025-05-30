@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Lista de Subnets</h2>
+  
+  <button type="button" id="btnAddSubnet" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubnetModal">
+    Adicionar Subnet
+  </button>
+</div>
+
+<table class="table table-sm table-striped table-bordered align-middle text-center">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Subnet</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for subnet in subnets %}
+    <tr>
+      <td>{{ subnet.id }}</td>
+      <td>{{ subnet.subnet }}</td>
+      <td>
+        <a href="{{ url_for('subnets.edit_subnet', subnet_id=subnet.id) }}" class="btn btn-primary btn-sm me-1">Editar</a>
+        <a href="{{ url_for('subnets.delete_subnet', subnet_id=subnet.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addSubnetModal" tabindex="-1" aria-labelledby="addSubnetModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addSubnetForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addSubnetModalLabel">Adicionar Nova Subnet</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="number" name="id" id="idInput" class="form-control mb-2" placeholder="Digite o ID" required min="1">
+          <input type="text" name="subnet" id="subnetInput" class="form-control" placeholder="Digite a subnet (ex: 192.168.1.0/24)" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modalElement = document.getElementById('addSubnetModal');
+    const modal = new bootstrap.Modal(modalElement);
+    // Aqui você pode adicionar event listeners para abrir ou fechar modal, ex:
+    // modal.show();
+  });
+  document.getElementById('addSubnetForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const subnet = document.getElementById('subnetInput').value;
+	const id = document.getElementById('idInput').value;
+    
+    fetch('{{ url_for("subnets.create") }}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+	  body: JSON.stringify({ subnet: subnet, id: parseInt(id) })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+	    if (data.message) {
+          alert(data.message);  // mostra uma mensagem mesmo em sucesso
+        }
+		
+        // fechar modal
+        const modalEl = document.getElementById('addSubnetModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+    
+        // opcional: atualizar a página ou a tabela
+        location.reload();
+      } else {
+		if (data.message) {
+          alert(data.message);  // mostra uma mensagem mesmo em sucesso
+        }
+        alert('Erro ao adicionar subnet');
+      }
+    }).catch(() => alert('Erro na comunicação com o servidor'));
+  });
+</script>
+{% endblock %}
+
