@@ -29,7 +29,10 @@ def add_subnet():
 
 @subnets_bp.route('/<int:subnet_id>/edit', methods=['GET', 'POST'])
 def edit_subnet(subnet_id):
-    return f"Editar subnet {subnet_id} (em breve)"
+    subnet_desc = request.args.get('subnet_desc')
+    print(f"{subnet_id}")
+    #return f"Editar subnet {subnet_id} (em breve)"
+    return render_template('subnets_form.html',subnet_id=subnet_id,subnet_desc=subnet_desc)
 
 @subnets_bp.route('/<int:subnet_id>/delete')
 def delete_subnet(subnet_id):
@@ -82,10 +85,9 @@ def create():
         # Cria o IP do roteador: 172.17.{id}.254
         router_ip = f"172.17.{subnet_id}.254"
         payload = {
-            "command": "config-test",
+            "command": "subnet4-add",
             "service": ["dhcp4"],
             "arguments": {
-                "Dhcp4": {
                     "subnet4": [
                         {
                             "id": subnet_id,
@@ -99,7 +101,6 @@ def create():
                             ]
                         }
                     ]
-                }
             }
         }
         

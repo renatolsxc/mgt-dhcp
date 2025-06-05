@@ -22,7 +22,7 @@
       <td>{{ subnet.id }}</td>
       <td>{{ subnet.subnet }}</td>
       <td>
-        <a href="{{ url_for('subnets.edit_subnet', subnet_id=subnet.id) }}" class="btn btn-primary btn-sm me-1">Editar</a>
+        <a href="{{ url_for('subnets.edit_subnet', subnet_id=subnet.id, subnet_desc=subnet.subnet)}}" class="btn btn-primary btn-sm me-1">Editar</a>
         <a href="{{ url_for('subnets.delete_subnet', subnet_id=subnet.id) }}" class="btn btn-danger btn-sm">Excluir</a>
       </td>
     </tr>

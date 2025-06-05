@@ -1,16 +1,15 @@
-/* subnet_form.html */
-{% extends 'bootstrap/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
-  <h2>{% if subnet %}Editar Subnet{% else %}Nova Subnet{% endif %}</h2>
+  <h2>{% if subnet_id %}Editar Subnet{% else %}Nova Subnet{% endif %}</h2>
   <form method="POST">
     <div class="form-group">
       <label for="subnet">Subnet</label>
-      <input type="text" class="form-control" name="subnet" required value="{{ subnet.subnet if subnet }}">
+      <input type="text" class="form-control" name="subnet" required value="{{ subnet_id if subnet_id }}">
     </div>
     <div class="form-group">
       <label for="description">Descrição</label>
-      <input type="text" class="form-control" name="description" required value="{{ subnet.description if subnet }}">
+      <input type="text" class="form-control" name="description" required value="{{ subnet_desc if subnet_desc }}">
     </div>
     <button type="submit" class="btn btn-primary mt-3">Salvar</button>
   </form>
